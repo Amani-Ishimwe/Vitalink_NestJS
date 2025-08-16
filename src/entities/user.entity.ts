@@ -7,6 +7,7 @@ export class User{
 
     @Column("varchar",{length: 200})
     name:string
+    
 
     @Column("varchar",{length: 200, unique: true})
     email:string

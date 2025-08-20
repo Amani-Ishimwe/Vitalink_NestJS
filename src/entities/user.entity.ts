@@ -7,12 +7,12 @@ export class User{
 
     @Column("varchar",{length: 200})
     name:string
-    
+
 
     @Column("varchar",{length: 200, unique: true})
     email:string
 
-    @Column({enum: ['PATIENT','DOCTOR','RECEPTIONIST']})
+    @Column({enum: ['PATIENT','DOCTOR','RECEPTIONIST','ADMIN']})
     role:string
 
     @Column("varchar",{length: 200})

@@ -15,4 +15,21 @@ export class RoomAssign{
     @ManyToOne(() => Patient, {})
     @JoinColumn({name: 'patientId'})
     patient: Patient
+
+    @Column({type:'uuid'})
+    @Index()
+    wardId: string;
+
+    @ManyToOne(() => Ward, {
+
+    })
+    @JoinColumn({name: 'wardId'})
+    ward: Ward
+
+    @Column("date")
+    checkIn: Date
+
+    @Column("date", {nullable: true})
+    checkOut ?: Date;
+
 }

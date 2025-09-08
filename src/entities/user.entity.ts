@@ -16,7 +16,6 @@ export class User{
     @Column("varchar",{length: 200})
     name:string
 
-
     @Column("varchar",{length: 200, unique: true})
     email:string
 
@@ -32,35 +31,27 @@ export class User{
      @OneToOne(() => Patient, (patient) => patient.user)
   patient: Patient;
 
-  // One-to-One with Doctor
   @OneToOne(() => Doctor, (doctor) => doctor.user)
   doctor: Doctor;
 
-  // One-to-One with Receptionist
   @OneToOne(() => Receptionist, (receptionist) => receptionist.user)
   receptionist: Receptionist;
 
-  // One-to-Many with Appointments (as patient)
   @OneToMany(() => Appointment, (appointment) => appointment.patient)
   patientAppointments: Appointment[];
 
-  // One-to-Many with Appointments (as doctor)
   @OneToMany(() => Appointment, (appointment) => appointment.doctor)
   doctorAppointments: Appointment[];
 
-  // One-to-Many with Prescriptions (as doctor)
   @OneToMany(() => Prescription, (prescription) => prescription.doctor)
   prescriptions: Prescription[];
 
-  // One-to-Many with ShiftSchedules (as doctor)
   @OneToMany(() => ShiftSchedule, (shift) => shift.doctor)
   shiftSchedules: ShiftSchedule[];
 
-  // One-to-Many with Bills (as patient)
   @OneToMany(() => Bill, (bill) => bill.patient)
   bills: Bill[];
 
-  // One-to-Many with RoomAssignments (as patient)
   @OneToMany(() => RoomAssign, (roomAssignment) => roomAssignment.patient)
   roomAssignments: RoomAssign[];
 

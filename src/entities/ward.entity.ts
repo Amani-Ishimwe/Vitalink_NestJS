@@ -9,7 +9,7 @@ export class Ward{
     @Column("varchar",{length: 255})
     name: string;
 
-    @Column("number")
+    @Column("decimal")
     capacity: number
 
     @OneToMany(() => RoomAssign, (roomAssign) => roomAssign.ward)

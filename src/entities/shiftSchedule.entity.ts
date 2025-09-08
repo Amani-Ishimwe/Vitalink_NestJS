@@ -13,10 +13,10 @@ export class ShiftSchedule{
      @ManyToOne(() => Doctor, {})
      doctor: Doctor;
 
-     @Column("datetime")
+     @Column("date")
      startTime: Date;
 
-     @Column("datetime")
+     @Column("date")
      endTime: Date;
     
      @Column({enum : ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']})

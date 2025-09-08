@@ -19,7 +19,8 @@ import { Bill } from "./entities/bill.entity";
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     synchronize: false,
-    entities: [User, 
+    entities: [
+        User, 
         Patient, 
         Doctor, 
         Receptionist, 

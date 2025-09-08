@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Patient } from "./patient.entity";
 import { Doctor } from "./doctor.entity";
 import { Receptionist } from "./reception.entity";
@@ -7,6 +7,7 @@ import { Prescription } from "./prescription.entity";
 import { ShiftSchedule } from "./shiftSchedule.entity";
 import { Bill } from "./bill.entity";
 import { RoomAssign } from "./roomAssign.entity";
+import * as bcrypt from 'bcrypt'
 
 @Entity()
 export class User{
@@ -25,34 +26,44 @@ export class User{
     @Column("varchar",{length: 200})
     password:string
 
+    @BeforeInsert()
+    async hashPassword(){
+        const saltRounds = 10;
+        this.password = await bcrypt.hash(this.password, saltRounds)
+    }
+
+    async validatePassword(password: string): Promise<boolean>{
+        return await bcrypt.compare(password, this.password)
+    }
+
     @Column("varchar",{length: 15})
     phone:string
 
-     @OneToOne(() => Patient, (patient) => patient.user)
-  patient: Patient;
+    @OneToOne(() => Patient, (patient) => patient.user)
+    patient: Patient;
 
-  @OneToOne(() => Doctor, (doctor) => doctor.user)
-  doctor: Doctor;
+    @OneToOne(() => Doctor, (doctor) => doctor.user)
+    doctor: Doctor;
 
-  @OneToOne(() => Receptionist, (receptionist) => receptionist.user)
-  receptionist: Receptionist;
+    @OneToOne(() => Receptionist, (receptionist) => receptionist.user)
+    receptionist: Receptionist;
 
-  @OneToMany(() => Appointment, (appointment) => appointment.patient)
-  patientAppointments: Appointment[];
+    @OneToMany(() => Appointment, (appointment) => appointment.patient)
+    patientAppointments: Appointment[];
 
-  @OneToMany(() => Appointment, (appointment) => appointment.doctor)
-  doctorAppointments: Appointment[];
+    @OneToMany(() => Appointment, (appointment) => appointment.doctor)
+    doctorAppointments: Appointment[];
 
-  @OneToMany(() => Prescription, (prescription) => prescription.doctor)
-  prescriptions: Prescription[];
+    @OneToMany(() => Prescription, (prescription) => prescription.doctor)
+    prescriptions: Prescription[];
 
-  @OneToMany(() => ShiftSchedule, (shift) => shift.doctor)
-  shiftSchedules: ShiftSchedule[];
+    @OneToMany(() => ShiftSchedule, (shift) => shift.doctor)
+    shiftSchedules: ShiftSchedule[];
 
-  @OneToMany(() => Bill, (bill) => bill.patient)
-  bills: Bill[];
+    @OneToMany(() => Bill, (bill) => bill.patient)
+    bills: Bill[];
 
-  @OneToMany(() => RoomAssign, (roomAssignment) => roomAssignment.patient)
-  roomAssignments: RoomAssign[];
+    @OneToMany(() => RoomAssign, (roomAssignment) => roomAssignment.patient)
+    roomAssignments: RoomAssign[];
 
 }

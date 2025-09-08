@@ -23,4 +23,13 @@ export class Bill{
     @JoinColumn({ name: 'appointmentId'})
     appointment: Appointment;
 
+    @Column("decimal",{ precision: 10, scale: 2 })
+    amount: number;
+
+    @Column({ enum: ['PENDING', 'PAID', 'OVERDUE']})
+    status: string;
+
+    @Column("date")
+    issueDate: Date;
+
 }

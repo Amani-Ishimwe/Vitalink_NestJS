@@ -2,6 +2,9 @@ import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { User } from 'src/entities/user.entity';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
+import { RegisterUserDto } from './dto/register.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+
 
 @Controller('auth')
 export class AuthController {
@@ -9,12 +12,13 @@ export class AuthController {
 
     @UseGuards(AuthGuard('local'))
     @Post('register')
-    async register(@Body() user: Partial<User>) {
-        return this.authService.register(user);
+    async register(@Body() createUserDto: RegisterUserDto) {
+        return this.authService.register(createUserDto);
     }
 
+
     @Post('login')
-    async login(@Body() user: any) {
-        return this.authService.login(user);
+    async login(@Body() loginDto: LoginUserDto) {
+        return this.authService.login(loginDto);
     }
 }

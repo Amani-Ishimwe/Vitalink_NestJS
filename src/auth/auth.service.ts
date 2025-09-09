@@ -2,7 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
+
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt'
+import { LoginUserDto } from './dto/login-user.dto';
+import { RegisterUserDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -22,20 +26,32 @@ export class AuthService {
         return null
     }
 
-    async login(user: any){
-        const payLoad = { email: user.email, sub: user.id }
-        return this.jwtService.sign(payLoad)
+    async login(
+        loginDto: LoginUserDto
+    ):Promise<{ user: User, access_token: string }> {
+        const user = await this.validateUser(loginDto.email, loginDto.password)
+        if (!user) {
+            throw new Error('Invalid credentials')
+        }
+        const payload = { email: user.email, sub: user.id }
+        return {
+            user,
+            access_token: this.jwtService.sign(payload)
+        }
     }
 
-    async register(user: Partial<User>){
-        const existingUser = await this.userRepository.findOneBy({ email: user.email})
-        if (existingUser){
-            throw new Error('User already exists')
-        }
-        const newUser = this.userRepository.create(user)
-        return this.userRepository.save(newUser)
+    async register(createUserDto: RegisterUserDto): Promise<{ user: User}> {
+        const existingUser = await this.userRepository.findOneBy({ email: createUserDto.email })
+         if (existingUser){
+             throw new Error('User already exists')
+         }
+        const hashedPassword = await bcrypt.hash(createUserDto.password, 10)
+        const newUser = this.userRepository.create({ ...createUserDto, password: hashedPassword })
+        const savedUser = await this.userRepository.save(newUser)
+        return { user: savedUser }
     }
+
     async findById(id: string): Promise<User | null> {
-      return this.userRepository.findOne({ where: { id: id  } });
-   }
-}
+        return this.userRepository.findOne({ where: { id: id } });
+    }
+ }

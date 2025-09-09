@@ -7,7 +7,8 @@ import { User } from "src/entities/user.entity";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor(private readonly authService: AuthService,
+    constructor(
+        private readonly authService: AuthService,
         private readonly configService: ConfigService
     ) {
         super({
@@ -18,7 +19,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
    async validate(payload: { sub: string }): Promise<User | null> {
-  return this.authService.findById(payload.sub); 
+   return this.authService.findById(payload.sub); 
 }
 
 }

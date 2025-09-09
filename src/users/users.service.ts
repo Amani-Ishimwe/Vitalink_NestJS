@@ -22,24 +22,45 @@ export class UsersService {
     return { user: savedUser}
   }
 
-  findAll(): Promise<{ users: User[] }> {
+  async findAll(
+    requestingUser: {role: string}
+  ): Promise<{ users: User[] }> {
+    if (requestingUser.role !== 'admin') {
+      throw new Error('Unauthorized');
+    }
     return this.userRepository.find().then(users => ({ users }))
   }
 
-  findOne(id: string): Promise<{ user: User }> {
-    return this.userRepository.findOneBy({ id: id }).then(user => {
-      if (!user) {
-        throw new Error('User not found')
-      }
-      return { user }
-    })
+  async findOne(
+    userId: string, requestingUser:{ id: string, role: string}
+  ):Promise<{ user: User}>{
+    const user = await this.userRepository.findOneBy({ id: userId})
+    if(!user){
+      throw new Error('User not found')
+    }
+    if ( requestingUser.role !== 'admin' && requestingUser.id !== userId){
+      throw new Error('Unauthorized access')
+    }
+    return { user }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(
+    id: string, updateUserDto: UpdateUserDto
+  ): Promise<{ user: User }> {
+    const user = await this.userRepository.findOneBy({ id: id })
+    if (!user) {
+      throw new Error('User not found')
+    }
+    Object.assign(user, updateUserDto)
+    const updatedUser = await this.userRepository.save(user)
+    return { user: updatedUser }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string): Promise<void>{
+    const user = await this.userRepository.findOneBy({ id: id})
+    if(!user){
+      throw new Error('User not found')
+    }
+    await this.userRepository.remove(user)
   }
 }

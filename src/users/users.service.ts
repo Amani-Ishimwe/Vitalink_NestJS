@@ -30,7 +30,11 @@ export class UsersService {
     if (requestingUser.role !== 'admin') {
       throw new Error('Unauthorized');
     }
-    return this.userRepository.find().then(users => ({ users }))
+    const skip = (page - 1) * limit;
+    return this.userRepository.find({
+      skip,
+      take: limit
+    }).then(users => ({ users }))
   }
 
   async findOne(

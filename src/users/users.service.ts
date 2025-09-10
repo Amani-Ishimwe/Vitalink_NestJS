@@ -23,7 +23,9 @@ export class UsersService {
   }
 
   async findAll(
-    requestingUser: {role: string}
+    requestingUser: {role: string},
+    page: number = 1,
+    limit: number = 10
   ): Promise<{ users: User[] }> {
     if (requestingUser.role !== 'admin') {
       throw new Error('Unauthorized');

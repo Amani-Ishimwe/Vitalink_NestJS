@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { DataSource } from "typeorm";
 import { User } from "./entities/user.entity";
 import { Patient } from "./entities/patient.entity";
@@ -11,6 +12,7 @@ import { RoomAssign } from "./entities/roomAssign.entity";
 import { ShiftSchedule } from "./entities/shiftSchedule.entity";
 import { Bill } from "./entities/bill.entity";
 
+ 
  const AppDataSource = new DataSource({
     type:"postgres",
     host:process.env.DB_HOST,
@@ -32,6 +34,7 @@ import { Bill } from "./entities/bill.entity";
         ShiftSchedule,
         Bill
     ],
+    migrations: ["dist/migrations/*.js"],
     logging: ["error","warn"]
 })
 

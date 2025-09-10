@@ -26,15 +26,6 @@ export class User{
     @Column("varchar",{length: 200})
     password:string
 
-    // @BeforeInsert()
-    // async hashPassword(){
-    //     const saltRounds = 10;
-    //     this.password = await bcrypt.hash(this.password, saltRounds)
-    // }
-
-    // async validatePassword(password: string): Promise<boolean>{
-    //     return await bcrypt.compare(password, this.password)
-    // }
 
     @Column("varchar",{length: 15})
     phone:string

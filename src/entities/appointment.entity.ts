@@ -3,7 +3,16 @@ import { Doctor } from "./doctor.entity";
 import { Patient } from "./patient.entity";
 import { Prescription } from "./prescription.entity";
 import { Bill } from "./bill.entity";
+import { CANCELLED } from "dns";
 
+
+export enum Status{
+    PENDING = 'PENDING',
+    CONFIRMED ='CONFIRMED',
+    CANCELLED ='CANCELLED',
+    COMPLETED ='COMPLETED'
+
+}
 @Entity()
 export class Appointment{
     @PrimaryGeneratedColumn('uuid')
@@ -29,7 +38,10 @@ export class Appointment{
     @JoinColumn({name:'patientId'})
     patient: Patient;
     
-    @Column({ enum: [ 'PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED']})
+    @Column({
+        type: 'enum',
+        enum: Status
+    })
     status: string;
 
     @Column("varchar",{length:500})

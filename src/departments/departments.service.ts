@@ -56,3 +56,4 @@ async remove(id: string):Promise<{ message: string}> {
     return { message: "Deleted department  sucessfully"}
   }
 }
+

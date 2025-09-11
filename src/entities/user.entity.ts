@@ -7,7 +7,14 @@ import { Prescription } from "./prescription.entity";
 import { ShiftSchedule } from "./shiftSchedule.entity";
 import { Bill } from "./bill.entity";
 import { RoomAssign } from "./roomAssign.entity";
-import * as bcrypt from 'bcrypt'
+
+
+export enum Role{
+  DOCTOR='DOCTOR',
+  ADMIN ='ADMIN',
+  RECEPTIONIST= 'RECEPTIONIST',
+  PATIENT ='PATIENT'
+}
 
 @Entity()
 export class User{
@@ -20,7 +27,10 @@ export class User{
     @Column("varchar",{length: 200, unique: true})
     email:string
 
-    @Column({enum: ['PATIENT','DOCTOR','RECEPTIONIST','ADMIN']})
+    @Column({
+        type:'enum',
+        enum: Role
+    })
     role:string
 
     @Column("varchar",{length: 200})

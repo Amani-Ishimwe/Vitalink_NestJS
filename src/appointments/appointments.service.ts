@@ -61,4 +61,17 @@ export class AppointmentsService {
    await this.appRepo.remove(appointment)
    return { message: "Appointment Deleted Successfully"}
   }
+  async findByDoctor(doctorId: string) {
+    return this.appRepo.find({
+      where: { doctor: { id: doctorId } },
+      relations: ['doctor', 'patient'],
+    });
+  }
+
+  async findByPatient(patientId: string) {
+    return this.appRepo.find({
+      where: { patient: { id: patientId } },
+      relations: ['doctor', 'patient'],
+    });
+  }
 }

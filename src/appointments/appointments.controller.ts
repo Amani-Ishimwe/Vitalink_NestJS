@@ -32,8 +32,21 @@ export class AppointmentsController {
     return this.appointmentsService.update(id, updateAppointmentDto);
   }
 
+  @Roles('DOCTOR')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.appointmentsService.remove(id);
+  }
+
+  @Roles('DOCTOR')
+  @Get('doctor/:id')
+  findByDoctor(@Param('id') id: string){
+    return this.appointmentsService.findByDoctor(id)
+  }
+
+  @Roles('PATIENT')
+  @Get('patient/:id')
+  findByPatient(@Param('id') id: string){
+    return  this.appointmentsService.findByPatient(id)
   }
 }

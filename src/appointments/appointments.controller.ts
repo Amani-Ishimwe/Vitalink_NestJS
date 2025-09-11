@@ -39,7 +39,6 @@ export class AppointmentsController {
   }
 
   @Roles('DOCTOR')
-  @Get('doctor/:id')
   findByDoctor(@Param('id') id: string){
     return this.appointmentsService.findByDoctor(id)
   }

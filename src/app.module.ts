@@ -12,6 +12,7 @@ import { DepartmentsModule } from './departments/departments.module';
 import { AppointmentsModule } from './appointments/appointments.module';
 import { PrescriptionsModule } from './prescriptions/prescriptions.module';
 import { WardRoomModule } from './ward-room/ward-room.module';
+import { SchedulesModule } from './schedules/schedules.module';
 
 
 
@@ -41,6 +42,7 @@ import { WardRoomModule } from './ward-room/ward-room.module';
     AppointmentsModule,
     PrescriptionsModule,
     WardRoomModule,
+    SchedulesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

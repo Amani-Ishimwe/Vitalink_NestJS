@@ -11,6 +11,8 @@ import { ReceptionistsModule } from './receptionists/receptionists.module';
 import { DepartmentsModule } from './departments/departments.module';
 import { AppointmentsModule } from './appointments/appointments.module';
 import { PrescriptionsModule } from './prescriptions/prescriptions.module';
+import { WardRoomModule } from './ward-room/ward-room.module';
+
 
 
 @Module({
@@ -37,7 +39,8 @@ import { PrescriptionsModule } from './prescriptions/prescriptions.module';
     ReceptionistsModule,
     DepartmentsModule,
     AppointmentsModule,
-    PrescriptionsModule
+    PrescriptionsModule,
+    WardRoomModule,
   ],
   controllers: [AppController],
   providers: [AppService],

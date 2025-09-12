@@ -13,5 +13,6 @@ export class Ward{
     capacity: number
 
     @OneToMany(() => RoomAssign, (roomAssign) => roomAssign.ward)
-    ward: Ward
+    assignments: RoomAssign[]
+
 }

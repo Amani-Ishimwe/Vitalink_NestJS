@@ -1,0 +1,40 @@
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { PrescriptionsService } from './prescriptions.service';
+import { CreatePrescriptionDto } from './dto/create-prescription.dto';
+import { UpdatePrescriptionDto } from './dto/update-prescription.dto';
+import { Roles } from 'src/decorators/roles.decorator';
+
+@Controller('prescriptions')
+export class PrescriptionsController {
+  constructor(private readonly prescriptionsService: PrescriptionsService) {}
+
+  @Roles('DOCTOR')
+  @Post()
+  create(@Body() createPrescriptionDto: CreatePrescriptionDto) {
+    return this.prescriptionsService.create(createPrescriptionDto);
+  }
+
+  @Roles('DOCTOR')
+  @Get()
+  findAll() {
+    return this.prescriptionsService.findAll();
+  }
+
+  @Roles('DOCTOR')
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.prescriptionsService.findOne(id);
+  }
+
+  @Roles('DOCTOR')
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updatePrescriptionDto: UpdatePrescriptionDto) {
+    return this.prescriptionsService.update(id, updatePrescriptionDto);
+  }
+
+  @Roles('DOCTOR')
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.prescriptionsService.remove(id);
+  }
+}

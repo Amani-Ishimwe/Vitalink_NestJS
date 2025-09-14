@@ -23,16 +23,6 @@ import { LocalStrategy } from './local.strategy/local.strategy';
   imports:[
   TypeOrmModule.forFeature([
      User, 
-     Patient, 
-     Doctor,  
-     Receptionist, 
-     Department, 
-     Appointment, 
-     Prescription,
-     Ward,
-     RoomAssign,
-     ShiftSchedule,
-     Bill 
   ]),
   PassportModule,
   JwtModule.registerAsync({

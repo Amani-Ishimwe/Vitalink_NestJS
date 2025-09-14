@@ -14,6 +14,7 @@ import { PrescriptionsModule } from './prescriptions/prescriptions.module';
 import { WardRoomModule } from './ward-room/ward-room.module';
 import { SchedulesModule } from './schedules/schedules.module';
 import { BillingModule } from './billing/billing.module';
+import { EmailModule } from './email/email.module';
 
 
 
@@ -45,6 +46,7 @@ import { BillingModule } from './billing/billing.module';
     WardRoomModule,
     SchedulesModule,
     BillingModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

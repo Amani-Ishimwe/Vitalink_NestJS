@@ -33,8 +33,7 @@ export class BillingService {
 
     if (!appointment) throw new NotFoundException("Appointment not found");
 
-    // Example: calculate amount (dummy logic)
-    const calculatedAmount = dto.amount ?? 100; // TODO: replace with real logic
+    const calculatedAmount = dto.amount ?? 100;
 
     const bill = this.billRepo.create({
       ...dto,

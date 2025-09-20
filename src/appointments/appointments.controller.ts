@@ -20,11 +20,6 @@ export class AppointmentsController {
     return this.appointmentsService.findAll();
   }
 
-  @Roles('ADMIN', 'DOCTOR')
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.appointmentsService.findOne(id);
-  }
 
   @Roles('DOCTOR')
   @Patch(':id')

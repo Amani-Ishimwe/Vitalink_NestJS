@@ -57,13 +57,7 @@ export class AppointmentsService {
     return { appointments }
   }
 
-  // async findOne(id: string) {
-  //   const appointment = await this.appRepo.findOneBy({ id})
-  //   if(!appointment){
-  //     throw new Error("Department not found")
-  //   }
-  //   return { appointment}
-  // }
+
 
   async findByDoctor(doctorId: string):Promise<{ appointments: Appointment[]}>{
     const appointments = await this.appRepo.find({

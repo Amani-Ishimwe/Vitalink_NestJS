@@ -5,55 +5,67 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Bill } from 'src/entities/bill.entity';
 import { Appointment } from 'src/entities/appointment.entity';
+import { Patient } from 'src/entities/patient.entity';
 
 @Injectable()
 export class BillingService {
   constructor(
     @InjectRepository(Bill)
     private billRepo: Repository<Bill>,
+
     @InjectRepository(Appointment)
-    private appointmentRepo: Repository<Appointment>
+    private appointmentRepo: Repository<Appointment>,
+
+    @InjectRepository(Patient)   
+    private patientRepo: Repository<Patient>,
   ) {}
 
-  findAll() {
-    return this.billRepo.find();
+  async findAll(
+    page: number = 1,
+    limit: number = 2
+  ): Promise<{ bills: Bill[] }> {
+    const skip = (page -1 ) * limit
+    const bills = await this.billRepo.find({
+      skip,
+      take: limit
+  });
+    return { bills };
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<Bill> {
     const bill = await this.billRepo.findOne({ where: { id } });
     if (!bill) throw new NotFoundException("Bill not found");
     return bill;
   }
 
-  async create(appointmentId: string, dto: CreateBillingDto) {
-    const appointment = await this.appointmentRepo.findOne({
-      where: { id: appointmentId },
-      relations: ["patient"],
-    });
+  async create(dto: CreateBillingDto): Promise<Bill> {
+    const patient = await this.patientRepo.findOne({ where: { id: dto.patientId } });
+    if (!patient) throw new NotFoundException("This patient does not exist");
 
+    const appointment = await this.appointmentRepo.findOne({ where: { id: dto.appointmentId } });
     if (!appointment) throw new NotFoundException("Appointment not found");
 
     const calculatedAmount = dto.amount ?? 100;
 
     const bill = this.billRepo.create({
-      ...dto,
-      appointmentId,
-      patientId: appointment.patient.id,
+      patientId: patient.id,
+      appointmentId: appointment.id,
       amount: calculatedAmount,
+      status: 'PENDING',
       issueDate: new Date(),
     });
 
     return this.billRepo.save(bill);
   }
 
-  async update(id: string, dto: UpdateBillingDto) {
+  async update(id: string, dto: UpdateBillingDto): Promise<Bill> {
     const bill = await this.findOne(id);
     Object.assign(bill, dto);
     return this.billRepo.save(bill);
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<void> {
     const bill = await this.findOne(id);
-    return this.billRepo.remove(bill);
+    await this.billRepo.remove(bill);
   }
 }

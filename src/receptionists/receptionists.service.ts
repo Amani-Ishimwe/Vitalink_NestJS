@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Receptionist } from 'src/entities/reception.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
+import { Department } from 'src/entities/department.entity';
 
 @Injectable()
 export class ReceptionistsService {
@@ -13,6 +14,8 @@ export class ReceptionistsService {
     private readonly receptionistRepo: Repository<Receptionist>,
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
+    @InjectRepository(Department)
+    private readonly depaRepo : Repository<Department>
   ){}
   async create(
     createReceptionistDto: CreateReceptionistDto
@@ -28,16 +31,22 @@ export class ReceptionistsService {
     if(existingReceptionist){
       throw new Error('Receptionist already exists')
     }
+
+    const department = await this.depaRepo.findOneBy({ id: createReceptionistDto.departmentId})
+    if(!department){
+      throw new Error("Department Does Not Exist")
+    }
     const newReceptionist = this.receptionistRepo.create({
-      ...createReceptionistDto,
-      departmentId: createReceptionistDto.departmentId
+      userId: user.id,
+      departmentId: department.id
     })
     const savedReceptionist = await this.receptionistRepo.save(newReceptionist)
     return { receptionist: savedReceptionist }
   }
 
   async findAll(): Promise<{ receptionists: Receptionist[]}> {
-    return this.receptionistRepo.find().then(receptionists => ({ receptionists }) );
+    const receptionists = await this.receptionistRepo.find()
+    return { receptionists }
   }
 
   async findOne(id: string): Promise<{ receptionist: Receptionist }> {

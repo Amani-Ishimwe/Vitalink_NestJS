@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UseGuards } from '@nestjs/common';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,6 +15,7 @@ export class PatientsService {
     @InjectRepository(User)
     private readonly userRepo: Repository<User>
   ){}
+
   async create(
     createPatientDto: CreatePatientDto
   ): Promise<{ patient: Patient }> {
@@ -31,9 +32,9 @@ export class PatientsService {
       throw new Error('Patient profile already exists for this user')
     }
     const newPatient = this.patientRepo.create({
-      ...createPatientDto,
+      userId: user.id,
       dob: createPatientDto.dob,
-      gender: createPatientDto.gender as Gender,
+      gender: createPatientDto.gender,
       insuranceInfo: createPatientDto.insuranceInfo,
     })
     const savedPatient = await this.patientRepo.save(newPatient)
@@ -42,8 +43,16 @@ export class PatientsService {
     
 
 
-  async findAll():Promise<{ patients: Patient[]}> {
-    return this.patientRepo.find().then(patients => ({ patients }) );
+  async findAll(
+    page: number = 1,
+    limit: number = 2
+  ):Promise<{ patients: Patient[]}> {
+    const skip = (page - 1) * limit
+    const patients = await this.patientRepo.find({
+      skip,
+      take: limit
+    })
+    return {patients}
   }
 
   async findOne(id: string): Promise<{ patient: Patient }> {

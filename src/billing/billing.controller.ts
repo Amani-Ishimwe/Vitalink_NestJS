@@ -17,7 +17,7 @@ export class BillingController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 1
   ) {
-    return this.billingService.findAll();
+    return this.billingService.findAll(page, limit);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

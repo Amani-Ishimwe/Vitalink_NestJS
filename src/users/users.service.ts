@@ -27,14 +27,12 @@ export class UsersService {
     page: number = 1,
     limit: number = 10
   ): Promise<{ users: User[] }> {
-    if (requestingUser.role !== 'admin') {
-      throw new Error('Unauthorized');
-    }
     const skip = (page - 1) * limit;
-    return this.userRepository.find({
+    const users = await this.userRepository.find({
       skip,
       take: limit
-    }).then(users => ({ users }))
+    })
+    return { users }
   }
 
   async findOne(
@@ -43,9 +41,6 @@ export class UsersService {
     const user = await this.userRepository.findOneBy({ id: userId})
     if(!user){
       throw new Error('User not found')
-    }
-    if ( requestingUser.role !== 'admin' && requestingUser.id !== userId){
-      throw new Error('Unauthorized access')
     }
     return { user }
   }

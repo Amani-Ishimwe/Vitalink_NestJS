@@ -8,18 +8,24 @@ import { CreateWardDto } from "./dto/create-ward-room.dto";
 import { UpdateWardRoomDto } from "./dto/update-ward-room.dto";
 import { CreateRoomAssignDto } from "./dto/create-room.dto";
 import { UpdateRoomDto } from "./dto/update-room.dto";
+import { Patient } from "src/entities/patient.entity";
 
 
 
 @Injectable()
 export class WardsService {
   constructor(
-    @InjectRepository(Ward) private wardRepo: Repository<Ward>,
-    @InjectRepository(RoomAssign) private roomAssignRepo: Repository<RoomAssign>,
+    @InjectRepository(Ward) 
+    private wardRepo: Repository<Ward>,
+    @InjectRepository(RoomAssign) 
+    private roomAssignRepo: Repository<RoomAssign>,
+    @InjectRepository(Patient)
+    private readonly patientRepo: Repository<Patient>
   ) {}
 
-  async findAll() {
-    return this.wardRepo.find();
+  async findAll(): Promise<{ wards: Ward[]}> {
+    const wards = await this.wardRepo.find();
+    return  { wards }
   }
 
   async findOne(id: string) {
@@ -35,14 +41,32 @@ export class WardsService {
     return { ...ward, usage };
   }
 
-  async create(dto: CreateWardDto) {
-    const ward = this.wardRepo.create(dto);
-    return this.wardRepo.save(ward);
+  async create(
+    dto: CreateWardDto
+  ): Promise<{ ward: Ward}> {
+    const ward = await this.wardRepo.findOneBy({ id: dto.name})
+    if(ward){
+      throw new Error("Ward already exists")
+    }
+    const newWard = await this.wardRepo.create({
+      name: dto.name,
+      capacity: dto.capacity
+    })
+    const savedWard = await this.wardRepo.save(newWard)
+    return { ward: savedWard }
   }
 
-  async update(id: string, dto: UpdateWardRoomDto) {
-    await this.wardRepo.update(id, dto);
-    return this.findOne(id);
+  async update(
+    id: string, 
+    dto: UpdateWardRoomDto
+  ): Promise<{ ward: Ward}> {
+   const ward = await this.wardRepo.findOneBy({ id: id})
+   if(!ward){
+    throw new Error("Ward does not exist")
+   }
+   Object.assign(ward, dto)
+   const updateWard = await this.wardRepo.save(ward)
+   return { ward: updateWard}
   }
 
   async remove(id: string) {
@@ -64,7 +88,9 @@ export class WardsService {
       throw new BadRequestException("Ward is full");
     }
 
-    const assign = this.roomAssignRepo.create(dto);
+    const assign = this.roomAssignRepo.create({
+
+    });
     return this.roomAssignRepo.save(assign);
   }
 

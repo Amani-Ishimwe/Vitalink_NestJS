@@ -76,7 +76,9 @@ export class WardsService {
 
   // ---- Room Assignment ----
 
-  async assignRoom(dto: CreateRoomAssignDto) {
+  async assignRoom(
+    dto: CreateRoomAssignDto
+  ):Promise<{ assign: RoomAssign}> {
     const ward = await this.wardRepo.findOne({
       where: { id: dto.wardId },
       relations: ["assignments"],
@@ -88,15 +90,29 @@ export class WardsService {
       throw new BadRequestException("Ward is full");
     }
 
+    const patient = await this.patientRepo.findOneBy({ id: dto.patientId })
+    if(!patient){
+      throw new Error("Patient Not Found")
+    }
     const assign = this.roomAssignRepo.create({
-
+        patientId: patient.id,
+        wardId : ward.id,
+        checkIn: dto.checkIn
     });
-    return this.roomAssignRepo.save(assign);
+    const saveAssign = await  this.roomAssignRepo.save(assign);
+    return { assign: saveAssign}
   }
 
-  async updateAssignment(id: string, dto: UpdateRoomDto) {
-    await this.roomAssignRepo.update(id, dto);
-    return this.roomAssignRepo.findOne({ where: { id } });
+  async updateAssignment(
+    id: string, dto: UpdateRoomDto
+  ):Promise <{ updatedAssign: RoomAssign}> {
+    const assign = await this.roomAssignRepo.findOneBy({ id: id})
+    if(!assign){
+      throw new Error("The Room is not assigned")
+    }
+    Object.assign(assign, dto)
+    const updatedAssign = await this.roomAssignRepo.save(assign)
+    return { updatedAssign: updatedAssign}
   }
 
   async removeAssignment(id: string) {

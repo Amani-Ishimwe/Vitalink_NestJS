@@ -1,12 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { WardsService } from './ward-room.service';
 import { CreateWardDto } from './dto/create-ward-room.dto';
 import { UpdateWardRoomDto } from './dto/update-ward-room.dto';
 import { Roles } from 'src/decorators/roles.decorator';
 import { CreateRoomAssignDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles/roles.guard';
 
 @Controller('')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles("RECEPTIONIST", "ADMIN")
 export class WardsController {
   constructor(private readonly wardsService: WardsService) {}
@@ -23,6 +26,7 @@ export class WardsController {
   }
 
   @Post("wards")
+  @UsePipes(new ValidationPipe())
   create(@Body() dto: CreateWardDto) {
     return this.wardsService.create(dto);
   }
@@ -39,6 +43,7 @@ export class WardsController {
 
   // Room Assignments
   @Post("room-assignments")
+  @UsePipes(new ValidationPipe())
   assign(@Body() dto: CreateRoomAssignDto) {
     return this.wardsService.assignRoom(dto);
   }

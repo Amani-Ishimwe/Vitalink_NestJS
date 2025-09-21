@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Doctor } from 'src/entities/doctor.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/entities/user.entity';
+import { Department } from 'src/entities/department.entity';
 
 @Injectable()
 export class DoctorsService {
@@ -12,7 +13,9 @@ export class DoctorsService {
     @InjectRepository(Doctor)
     private readonly doctorRepo: Repository<Doctor>,
     @InjectRepository(User)
-    private readonly userRepo: Repository<User>
+    private readonly userRepo: Repository<User>,
+    @InjectRepository(Department)
+    private readonly depaRepo: Repository<Department>
   ){}
   
   async create(
@@ -23,18 +26,20 @@ export class DoctorsService {
     if(!user){
       throw new Error('User not found')
     }
-    if (user.role !== 'DOCTOR'){
-      throw new Error('User is not a doctor')
-    }
     const existingDoctor = await this.doctorRepo.findOneBy({ userId: createDoctorDto.userId })
     if (existingDoctor) {
       throw new Error('Doctor already exists')
     }
 
+    const department = await this.depaRepo.findOneBy({id : createDoctorDto.departmentId})
+    if(!department){
+      throw new Error("Department does not exist")
+    }
+
     const newDoctor = this.doctorRepo.create({
-      ...createDoctorDto,
+      userId: user.id,
+      departmentId: department.id,
       specialization: createDoctorDto.specialization,
-      departmentId: createDoctorDto.departmentId
     })
     const savedDoctor = await this.doctorRepo.save(newDoctor)
     return { doctor: savedDoctor };

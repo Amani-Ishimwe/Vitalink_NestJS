@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from 'src/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt'
 
 @Injectable()
 export class UsersService {
@@ -17,13 +18,19 @@ export class UsersService {
     if (user){
       throw new Error('User already exists')
     }
-    const newUser = this.userRepository.create(createUserDto)
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10)
+    const newUser = this.userRepository.create({
+      name: createUserDto.name,
+      email: createUserDto.email,
+      role: createUserDto.role,
+      password: hashedPassword,
+      phone: createUserDto.phone
+    })
     const savedUser = await this.userRepository.save(newUser)
     return { user: savedUser}
   }
 
   async findAll(
-    requestingUser: {role: string},
     page: number = 1,
     limit: number = 10
   ): Promise<{ users: User[] }> {

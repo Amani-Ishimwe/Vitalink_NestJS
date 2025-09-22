@@ -8,6 +8,8 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles/roles.guard';
 
 @Controller('users')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('ADMIN')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService
@@ -20,32 +22,25 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('ADMIN')
   @Get()
   findAll(
     @Req() req,
     @Query('page') page: number = 1, 
     @Query('limit') limit: number = 10) {
-    return this.usersService.findAll(req.user, page, limit);
+    return this.usersService.findAll(page, limit);
   }
  
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('ADMIN')
   @Get(':id')
   findOne(@Param('id') id: string, @Req() req) {
     return this.usersService.findOne(id, req.user);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('ADMIN')
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);

@@ -33,9 +33,6 @@ export class Doctor{
     @JoinColumn({name:'departmentId'})
     department: Department;
 
-    @Column({type: 'jsonb', nullable: true})
-    availableSlots: string[]
-
     @OneToMany(() => Appointment, (appointment) => appointment.doctor)
     appointment: Appointment[];
     

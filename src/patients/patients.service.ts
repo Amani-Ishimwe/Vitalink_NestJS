@@ -50,13 +50,18 @@ export class PatientsService {
     const skip = (page - 1) * limit
     const patients = await this.patientRepo.find({
       skip,
-      take: limit
+      take: limit,
+      relations: ["user", "appointments","bills"]
     })
     return {patients}
   }
 
   async findOne(id: string): Promise<{ patient: Patient }> {
-    const patient = await this.patientRepo.findOneBy({ id });
+    const patient = await this.patientRepo.findOne({
+      where: { id },
+      relations: ["user", "appointments","bills"]
+
+    });
     if (!patient) {
       throw new Error('Patient not found');
     }

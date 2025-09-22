@@ -45,12 +45,17 @@ export class ReceptionistsService {
   }
 
   async findAll(): Promise<{ receptionists: Receptionist[]}> {
-    const receptionists = await this.receptionistRepo.find()
+    const receptionists = await this.receptionistRepo.find({
+      relations: [ "user", "department"]
+    })
     return { receptionists }
   }
 
   async findOne(id: string): Promise<{ receptionist: Receptionist }> {
-    const receptionist = await this.receptionistRepo.findOneBy({ id });
+    const receptionist = await this.receptionistRepo.findOne({ 
+      where : { id },
+      relations: [ "user", "department"]
+     });
     if (!receptionist) {
       throw new Error('Receptionist not found');
     }

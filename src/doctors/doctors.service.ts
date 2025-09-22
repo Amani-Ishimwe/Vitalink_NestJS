@@ -49,14 +49,19 @@ export class DoctorsService {
     page: number, limit:number
   ): Promise<{ doctors: Doctor[]}> {
     const skip = (page - 1) * limit;
-    return this.doctorRepo.find({
+    const doctors =await this.doctorRepo.find({
       skip,
-      take: limit
-    }).then(doctors => ({ doctors }) );
+      take: limit,
+      relations:["user","department"]
+    })
+    return { doctors }
   }
 
   async findOne(id: string) {
-    const doctor = await this.doctorRepo.findOneBy({ id });
+    const doctor = await this.doctorRepo.findOne({
+      where: {id},
+      relations: ["user", "department"]
+    });
     if (!doctor) {
       throw new Error('Doctor not found');
     }

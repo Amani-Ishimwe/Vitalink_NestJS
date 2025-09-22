@@ -1,9 +1,15 @@
-import { IsString } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsString, IsUUID } from "class-validator";
 
 export class CreateReceptionistDto {
-    @IsString()
+
+    @IsUUID()
+    @IsNotEmpty()
+    @ApiProperty()
     userId: string;
 
-    @IsString()
+    @IsUUID()
+    @IsNotEmpty()
+    @ApiProperty()
     departmentId: string;
 }

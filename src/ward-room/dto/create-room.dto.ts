@@ -1,13 +1,20 @@
-import { IsDateString, IsString } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsDateString, IsNotEmpty, IsString, IsUUID } from "class-validator";
 
 export class CreateRoomAssignDto{
 
-    @IsString()
+    @IsUUID()
+    @IsNotEmpty()
+    @ApiProperty()
     patientId: string;
 
-    @IsString()
+    @IsUUID()
+    @IsNotEmpty()
+    @ApiProperty()
     wardId: string
 
     @IsDateString()
+    @IsNotEmpty()
+    @ApiProperty()
     checkIn: Date
 }

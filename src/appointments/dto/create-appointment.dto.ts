@@ -1,20 +1,31 @@
-import { IsEnum, IsString, IsStrongPassword } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsEnum, IsNotEmpty, IsString, IsStrongPassword, IsUUID } from "class-validator";
 import { Status } from "src/entities/appointment.entity";
 
 export class CreateAppointmentDto {
-    @IsString()
+    @IsUUID()
+    @IsNotEmpty()
+    @ApiProperty()
     appointmentId: string
     
-    @IsString()
+    @IsUUID()
+    @IsNotEmpty()
+    @ApiProperty()
     doctorId: string;
 
-    @IsString()
+    @IsUUID()
+    @IsNotEmpty()
+    @ApiProperty()
     patientId: string;
 
     @IsEnum(Status)
+    @IsNotEmpty()
+    @ApiProperty()
     status: Status
 
     @IsString()
+    @IsNotEmpty()
+    @ApiProperty()
     notes: string
 
 

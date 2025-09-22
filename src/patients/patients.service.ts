@@ -1,4 +1,4 @@
-import { Inject, Injectable, UseGuards } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UseGuards } from '@nestjs/common';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,15 +21,15 @@ export class PatientsService {
   ): Promise<{ patient: Patient }> {
     const user = await this.userRepo.findOneBy({ id: createPatientDto.userId })
     if (!user) {
-      throw new Error('User not found')
+      throw new NotFoundException('User not found')
     }
     if (user.role !== 'PATIENT'){
-      throw new Error('User is not a patient')
+      throw new BadRequestException('User is not a patient')
     }
     
     const existingPatient = await this.patientRepo.findOneBy({ userId: createPatientDto.userId })
     if (existingPatient){
-      throw new Error('Patient profile already exists for this user')
+      throw new BadRequestException('Patient profile already exists for this user')
     }
     const newPatient = this.patientRepo.create({
       userId: user.id,
@@ -63,7 +63,7 @@ export class PatientsService {
 
     });
     if (!patient) {
-      throw new Error('Patient not found');
+      throw new NotFoundException('Patient not found');
     }
     return { patient };
   }
@@ -71,7 +71,7 @@ export class PatientsService {
   async update(id: string, updatePatientDto: UpdatePatientDto): Promise<{ patient: Patient }> {
     const patient = await this.patientRepo.findOneBy({ id });
     if (!patient) {
-      throw new Error('Patient not found');
+      throw new NotFoundException('Patient not found');
     }
     this.patientRepo.merge(patient, {
       ...updatePatientDto
@@ -83,7 +83,7 @@ export class PatientsService {
    async remove(id: string): Promise<{ message: string }> {
      const patient = await this.patientRepo.findOneBy({ id });
      if (!patient) {
-       throw new Error('Patient not found');
+       throw new NotFoundException('Patient not found');
      }
      await this.patientRepo.remove(patient);
      return { message: `Patient #${id} removed successfully` };

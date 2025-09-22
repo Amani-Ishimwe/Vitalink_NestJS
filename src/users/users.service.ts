@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from 'src/entities/user.entity';
@@ -16,7 +16,7 @@ export class UsersService {
   ):Promise<{ user: User}> {
     const user = await this.userRepository.findOneBy({ email: createUserDto.email })
     if (user){
-      throw new Error('User already exists')
+      throw new BadRequestException('User already exists')
     }
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10)
     const newUser = this.userRepository.create({
@@ -47,7 +47,7 @@ export class UsersService {
   ):Promise<{ user: User}>{
     const user = await this.userRepository.findOneBy({ id: userId})
     if(!user){
-      throw new Error('User not found')
+      throw new NotFoundException('User not found')
     }
     return { user }
   }
@@ -57,7 +57,7 @@ export class UsersService {
   ): Promise<{ user: User }> {
     const user = await this.userRepository.findOneBy({ id: id })
     if (!user) {
-      throw new Error('User not found')
+      throw new NotFoundException('User not found')
     }
     Object.assign(user, updateUserDto)
     const updatedUser = await this.userRepository.save(user)
@@ -67,7 +67,7 @@ export class UsersService {
   async remove(id: string): Promise<void>{
     const user = await this.userRepository.findOneBy({ id: id})
     if(!user){
-      throw new Error('User not found')
+      throw new NotFoundException('User not found')
     }
     await this.userRepository.remove(user)
   }

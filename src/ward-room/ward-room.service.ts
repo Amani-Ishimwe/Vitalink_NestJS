@@ -46,7 +46,7 @@ export class WardsService {
   ): Promise<{ ward: Ward}> {
     const ward = await this.wardRepo.findOneBy({ id: dto.name})
     if(ward){
-      throw new Error("Ward already exists")
+      throw new NotFoundException("Ward already exists")
     }
     const newWard = await this.wardRepo.create({
       name: dto.name,
@@ -62,7 +62,7 @@ export class WardsService {
   ): Promise<{ ward: Ward}> {
    const ward = await this.wardRepo.findOneBy({ id: id})
    if(!ward){
-    throw new Error("Ward does not exist")
+    throw new NotFoundException("Ward does not exist")
    }
    Object.assign(ward, dto)
    const updateWard = await this.wardRepo.save(ward)
@@ -108,7 +108,7 @@ export class WardsService {
   ):Promise <{ updatedAssign: RoomAssign}> {
     const assign = await this.roomAssignRepo.findOneBy({ id: id})
     if(!assign){
-      throw new Error("The Room is not assigned")
+      throw new BadRequestException("The Room is not assigned")
     }
     Object.assign(assign, dto)
     const updatedAssign = await this.roomAssignRepo.save(assign)

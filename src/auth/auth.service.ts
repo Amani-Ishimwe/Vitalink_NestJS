@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'; 
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common'; 
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
@@ -31,7 +31,7 @@ export class AuthService {
     ):Promise<{ user: User, access_token: string }> {
         const user = await this.validateUser(loginDto.email, loginDto.password)
         if (!user) {
-            throw new Error('Invalid credentials')
+            throw new UnauthorizedException('Invalid credentials')
         }
         const payload = { email: user.email, sub: user.id }
         return {
@@ -43,7 +43,7 @@ export class AuthService {
     async register(createUserDto: RegisterUserDto): Promise<{ user: User}> {
         const existingUser = await this.userRepository.findOneBy({ email: createUserDto.email })
          if (existingUser){
-             throw new Error('User already exists')
+             throw new BadRequestException('User already exists')
          }
         const hashedPassword = await bcrypt.hash(createUserDto.password, 10)
         const newUser = this.userRepository.create({ ...createUserDto, password: hashedPassword })

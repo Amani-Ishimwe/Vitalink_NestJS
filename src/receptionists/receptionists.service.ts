@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReceptionistDto } from './dto/create-receptionist.dto';
 import { UpdateReceptionistDto } from './dto/update-receptionist.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,19 +22,19 @@ export class ReceptionistsService {
   ): Promise<{ receptionist: Receptionist}> {
     const user = await this.userRepo.findOneBy({ id : createReceptionistDto.userId })
     if(!user){
-      throw new Error('User not found')
+      throw new NotFoundException('User not found')
     }
     if (user.role !== 'RECEPTIONIST'){
-      throw new Error('User is not a receptionist')
+      throw new BadRequestException('User is not a receptionist')
     }
     const existingReceptionist = await this.receptionistRepo.findOneBy({ userId: createReceptionistDto.userId})
     if(existingReceptionist){
-      throw new Error('Receptionist already exists')
+      throw new BadRequestException('Receptionist already exists')
     }
 
     const department = await this.depaRepo.findOneBy({ id: createReceptionistDto.departmentId})
     if(!department){
-      throw new Error("Department Does Not Exist")
+      throw new NotFoundException("Department Does Not Exist")
     }
     const newReceptionist = this.receptionistRepo.create({
       userId: user.id,
@@ -57,7 +57,7 @@ export class ReceptionistsService {
       relations: [ "user", "department"]
      });
     if (!receptionist) {
-      throw new Error('Receptionist not found');
+      throw new NotFoundException('Receptionist not found');
     }
     return { receptionist };
   }
@@ -65,7 +65,7 @@ export class ReceptionistsService {
   async update(id: string, updateReceptionistDto: UpdateReceptionistDto): Promise<{ receptionist: Receptionist }> {
     const receptionist = await this.receptionistRepo.findOneBy({ id });
     if (!receptionist) {
-      throw new Error('Receptionist not found');
+      throw new NotFoundException('Receptionist not found');
     }
     this.receptionistRepo.merge(receptionist, updateReceptionistDto);
     const updatedReceptionist = await this.receptionistRepo.save(receptionist);
@@ -75,7 +75,7 @@ export class ReceptionistsService {
   async remove(id: string): Promise<{ message: string }> {
     const receptionist = await this.receptionistRepo.findOneBy({ id });
     if (!receptionist) {
-      throw new Error('Receptionist not found');
+      throw new NotFoundException('Receptionist not found');
     }
     await this.receptionistRepo.remove(receptionist);
     return { message: 'Receptionist removed successfully' };

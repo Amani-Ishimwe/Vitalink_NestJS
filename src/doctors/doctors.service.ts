@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -24,16 +24,16 @@ export class DoctorsService {
 
     const user = await this.userRepo.findOneBy({ id: createDoctorDto.userId })
     if(!user){
-      throw new Error('User not found')
+      throw new NotFoundException('User not found')
     }
     const existingDoctor = await this.doctorRepo.findOneBy({ userId: createDoctorDto.userId })
     if (existingDoctor) {
-      throw new Error('Doctor already exists')
+      throw new BadRequestException('Doctor already exists')
     }
 
     const department = await this.depaRepo.findOneBy({id : createDoctorDto.departmentId})
     if(!department){
-      throw new Error("Department does not exist")
+      throw new NotFoundException("Department does not exist")
     }
 
     const newDoctor = this.doctorRepo.create({
@@ -63,7 +63,7 @@ export class DoctorsService {
       relations: ["user", "department"]
     });
     if (!doctor) {
-      throw new Error('Doctor not found');
+      throw new NotFoundException('Doctor not found');
     }
     return { doctor };
   }
@@ -71,7 +71,7 @@ export class DoctorsService {
   async update(id: string, updateDoctorDto: UpdateDoctorDto): Promise<{ doctor: Doctor }> {
     const doctor = await this.doctorRepo.findOneBy({ id });
     if (!doctor) {
-      throw new Error('Doctor not found');
+      throw new NotFoundException('Doctor not found');
     }
     this.doctorRepo.merge(doctor, updateDoctorDto);
     const updatedDoctor = await this.doctorRepo.save(doctor);
@@ -81,7 +81,7 @@ export class DoctorsService {
   async remove(id: string): Promise<{ message: string }> {
     const doctor = await this.doctorRepo.findOneBy({ id });
     if (!doctor) {
-      throw new Error('Doctor not found');
+      throw new NotFoundException('Doctor not found');
     }
     await this.doctorRepo.remove(doctor);
     return { message: 'Doctor removed successfully' };
@@ -92,7 +92,7 @@ export class DoctorsService {
       relations: ['appointment'],
     });
     if (!doctor) {
-      throw new Error('Doctor not found');
+      throw new NotFoundException('Doctor not found');
     }
     return { appointments: doctor.appointment };
   }
@@ -102,7 +102,7 @@ export class DoctorsService {
       relations: ['schedule'],
     });
     if (!doctor) {
-      throw new Error('Doctor not found');
+      throw new NotFoundException('Doctor not found');
     }
     return { schedule: doctor.shiftSchedules };
   }

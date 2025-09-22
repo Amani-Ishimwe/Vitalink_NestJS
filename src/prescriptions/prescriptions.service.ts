@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePrescriptionDto } from './dto/create-prescription.dto';
 import { UpdatePrescriptionDto } from './dto/update-prescription.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,12 +22,12 @@ export class PrescriptionsService {
   ):Promise<{ prescription: Prescription}> {
     const appointment = await this.appRepo.findOneBy({ id: createPrescriptionDto.appointmentId})
     if(!appointment){
-      throw new Error("The appointment does not exist")
+      throw new NotFoundException("The appointment does not exist")
     }
 
     const doctor = await this.doctorRepo.findOneBy({ id: createPrescriptionDto.doctorId})
     if(!doctor){
-      throw new Error("The doctor does not exists")
+      throw new NotFoundException("The doctor does not exists")
     }
     const prescription = await this.preRepo.create({
       appointmentId: appointment.id,
@@ -49,7 +49,7 @@ export class PrescriptionsService {
   async findOne(id: string) {
     const prescription = await this.preRepo.findOneBy({ id })
     if(!prescription){
-      throw new Error("Prescription Not Found")
+      throw new NotFoundException("Prescription Not Found")
     }
     return { prescription }
   }
@@ -59,7 +59,7 @@ export class PrescriptionsService {
   ): Promise<{ prescription: Prescription}> {
     const prescription = await this.preRepo.findOneBy({ id })
     if(!prescription){
-      throw new Error("Prescription Not Found")
+      throw new NotFoundException("Prescription Not Found")
     }
     await this.preRepo.merge(prescription, updatePrescriptionDto)
     const updatedPrescription  = await this.preRepo.save(prescription)
@@ -70,7 +70,7 @@ export class PrescriptionsService {
   async remove(id: string): Promise<{ message: string}> {
      const prescription = await this.preRepo.findOneBy({ id })
     if(!prescription){
-      throw new Error("Prescription Not Found")
+      throw new NotFoundException("Prescription Not Found")
     }
     await this.preRepo.remove(prescription)
     return { message: " The prescription has been removed "};

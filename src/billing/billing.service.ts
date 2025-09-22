@@ -12,10 +12,8 @@ export class BillingService {
   constructor(
     @InjectRepository(Bill)
     private billRepo: Repository<Bill>,
-
     @InjectRepository(Appointment)
     private appointmentRepo: Repository<Appointment>,
-
     @InjectRepository(Patient)   
     private patientRepo: Repository<Patient>,
   ) {}

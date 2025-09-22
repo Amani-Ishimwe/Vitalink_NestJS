@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { Appointment, Status } from 'src/entities/appointment.entity';
@@ -24,12 +24,12 @@ export class AppointmentsService {
 
     const doctor = await this.doctorRepo.findOneBy({ id:  createAppointmentDto.doctorId})
     if(!doctor){
-      throw new Error("Doctor Does Not Exist")
+      throw new NotFoundException("Doctor Does Not Exist")
     }
 
     const patient = await this.patientRepo.findOneBy({ id: createAppointmentDto.patientId})
     if(!patient){
-      throw new Error("Patient does not exist")
+      throw new NotFoundException("Patient does not exist")
     }
 
     const appointment = await this.appRepo.findOneBy({ 
@@ -37,7 +37,7 @@ export class AppointmentsService {
         patientId: createAppointmentDto.patientId
     })
     if(appointment){
-      throw new Error("Appointment Already Exists")
+      throw new BadRequestException("Appointment Already Exists")
     }
 
     const newAppointment = await this.appRepo.create({
@@ -80,7 +80,7 @@ export class AppointmentsService {
    ): Promise<{ appointment: Appointment}> {
     const department = await this.appRepo.findOneBy({ id })
     if(!department){
-      throw new Error("Appointment Does Not Exist")
+      throw new NotFoundException("Appointment Does Not Exist")
     }
   await this.appRepo.merge(department,updateAppointmentDto)
   const updatedAppointment = await this.appRepo.save(department)
@@ -90,7 +90,7 @@ export class AppointmentsService {
   async remove(id: string):Promise<{ message: string}> {
    const appointment = await this.appRepo.findOneBy({ id })
    if(!appointment){
-    throw new Error("Appointment Does Not Exist")
+    throw new NotFoundException("Appointment Does Not Exist")
    }
    await this.appRepo.remove(appointment)
    return { message: "Appointment Deleted Successfully"}

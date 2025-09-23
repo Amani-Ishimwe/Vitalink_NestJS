@@ -20,7 +20,7 @@ export class BillingService {
 
   async findAll(
     page: number = 1,
-    limit: number = 20
+    limit: number = 10
   ): Promise<{ bills: Bill[] }> {
     const skip = (page -1 ) * limit
     const bills = await this.billRepo.find({

@@ -19,8 +19,8 @@ export class AuthService {
    
     async validateUser( email: string , password: string) : Promise<any> {
         const user = await this.userRepository.findOneBy({ email })
-        if (user && user.password === password){
-            const {password, ... result } = user
+        if (user && await bcrypt.compare(password, user.password)){
+            const {password, ...result } = user
             return result
         }
         return null
@@ -33,12 +33,12 @@ export class AuthService {
         if (!user) {
             throw new UnauthorizedException('Invalid credentials')
         }
-        const payload = { email: user.email, sub: user.id }
+        const payload = { sub: user.id, email: user.email, role:user.role }
         return {
             user,
             access_token: this.jwtService.sign(payload)
         }
-    }
+}
 
     async register(createUserDto: RegisterUserDto): Promise<{ user: User}> {
         const existingUser = await this.userRepository.findOneBy({ email: createUserDto.email })

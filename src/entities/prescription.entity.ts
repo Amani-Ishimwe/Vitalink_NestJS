@@ -2,7 +2,7 @@ import { Column, Entity, Index, ManyToOne, OneToOne, PrimaryGeneratedColumn } fr
 import { Appointment } from "./appointment.entity";
 import { Doctor } from "./doctor.entity";
 
-@Entity()
+@Entity('prescription')
 export class Prescription{
   @PrimaryGeneratedColumn('uuid')
   id: string;

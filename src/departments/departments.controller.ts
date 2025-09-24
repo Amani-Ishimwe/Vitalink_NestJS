@@ -9,7 +9,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 
 @Controller('departments')
 @ApiTags("Departments")
-@ApiBearerAuth()
+@ApiBearerAuth('access-token')
 export class DepartmentsController {
   constructor(private readonly departmentsService: DepartmentsService) {}
 

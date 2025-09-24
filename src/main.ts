@@ -16,6 +16,14 @@ async function bootstrap() {
   .setTitle("Vital-Link")
   .setDescription("This is a platform that manages hospitals internally such as handling shifts")
   .setVersion("1.0")
+  .addBearerAuth(
+    {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    },
+    'access-token', 
+  )
   .build()
 
   const document = SwaggerModule.createDocument(app, config)

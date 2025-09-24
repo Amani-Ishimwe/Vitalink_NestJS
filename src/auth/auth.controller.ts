@@ -5,7 +5,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RegisterUserDto } from './dto/register.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { JwtAuthGuard } from './jwt-auth/jwt-auth.guard';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 
 @Controller('auth')
@@ -30,6 +30,7 @@ export class AuthController {
 
     @Get('profile')
     @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth('access-token')
     @ApiOperation({ summary:"Fetch User Profile"})
     @ApiResponse({status : 201, description: "User profile fetched successfully"})
     getProfile(@Req() req){

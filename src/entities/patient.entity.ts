@@ -19,7 +19,7 @@ export enum Gender {
   OTHER = 'OTHER',
 }
 
-@Entity('patients')
+@Entity('patient')
 export class Patient {
   @PrimaryGeneratedColumn('uuid')
   id: string;

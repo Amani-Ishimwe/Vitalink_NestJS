@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { RoomAssign } from "./roomAssign.entity";
 
-@Entity()
+@Entity('ward')
 export class Ward{
     @PrimaryGeneratedColumn('uuid')
     id: string;

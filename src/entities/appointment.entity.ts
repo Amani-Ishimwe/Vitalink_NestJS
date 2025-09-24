@@ -13,7 +13,7 @@ export enum Status{
     COMPLETED ='COMPLETED'
 
 }
-@Entity()
+@Entity('appointment')
 export class Appointment{
     @PrimaryGeneratedColumn('uuid')
     id: string;

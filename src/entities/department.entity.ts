@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Receptionist } from "./reception.entity";
 import { Doctor } from "./doctor.entity";
 
-@Entity()
+@Entity('department')
 export class Department{
     @PrimaryGeneratedColumn('uuid')
     id: string;

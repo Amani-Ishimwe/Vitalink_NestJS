@@ -3,7 +3,7 @@ import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } 
 import { Patient } from "./patient.entity";
 import { Ward } from './ward.entity';
 
-@Entity()
+@Entity('roomAssign')
 export class RoomAssign{
     @PrimaryGeneratedColumn()
     id:string;

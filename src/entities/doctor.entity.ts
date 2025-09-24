@@ -5,7 +5,7 @@ import { Appointment } from "./appointment.entity";
 import { Prescription } from "./prescription.entity";
 import { ShiftSchedule } from "./shiftSchedule.entity";
 
-@Entity()
+@Entity('doctor')
 export class Doctor{
     @PrimaryGeneratedColumn('uuid')
     id: string;

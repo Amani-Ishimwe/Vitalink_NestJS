@@ -1,7 +1,7 @@
 import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Doctor } from "./doctor.entity";
 
-@Entity()
+@Entity('shiftSchedule')
 export class ShiftSchedule{
      @PrimaryGeneratedColumn('uuid')
      id: string;

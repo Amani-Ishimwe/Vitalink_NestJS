@@ -9,7 +9,7 @@ import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@ne
 
 @Controller('billing')
 @ApiTags("Billing")
-@ApiBearerAuth()
+@ApiBearerAuth('access-token')
 export class BillingController {
   constructor(private readonly billingService: BillingService) {}
 

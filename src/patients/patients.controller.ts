@@ -9,7 +9,7 @@ import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@ne
 
 @Controller('patients')
 @ApiTags("Patients")
-@ApiBearerAuth()
+@ApiBearerAuth('access-token')
 export class PatientsController {
   constructor(private readonly patientsService: PatientsService) {}
 

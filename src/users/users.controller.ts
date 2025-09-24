@@ -6,8 +6,11 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Roles } from 'src/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles/roles.guard';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('users')
+@ApiTags("Users")
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('ADMIN')
 export class UsersController {
@@ -18,11 +21,17 @@ export class UsersController {
 
   @Post()
   @UsePipes(new ValidationPipe())
+  @ApiOperation({ summary : " Creating new User"})
+  @ApiResponse({ status: 201, description: "User Created Successfully" })
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @Get()
+  @ApiOperation({ summary: "Fetching all Users"})
+  @ApiResponse({ status: 200, description: "Fetching all Users"})
+  @ApiQuery({name : "page" , required: false, type :Number, description: "Page number (default: 1) " })
+  @ApiQuery({name : "limit" , required: false, type :Number, description: "Items per page (default: 10) " })
   findAll(
     @Req() req,
     @Query('page') page: number = 1, 
@@ -31,17 +40,23 @@ export class UsersController {
   }
  
   @Get(':id')
+  @ApiOperation({ summary: " Fetching Single User "})
+  @ApiResponse({ status: 200, description: "User fetched successfully"})
   findOne(@Param('id') id: string, @Req() req) {
     return this.usersService.findOne(id, req.user);
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: " Updating Single User "})
+  @ApiResponse({ status: 200, description: "User updated successfully"})
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
 
   @Delete(':id')
+  @ApiOperation({ summary: " Deleting Single User "})
+  @ApiResponse({ status: 200, description: "User deleted successfully"})
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }

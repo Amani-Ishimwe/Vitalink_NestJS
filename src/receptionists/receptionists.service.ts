@@ -44,8 +44,14 @@ export class ReceptionistsService {
     return { receptionist: savedReceptionist }
   }
 
-  async findAll(): Promise<{ receptionists: Receptionist[]}> {
+  async findAll(
+    page: number = 1,
+    limit : number = 10
+  ): Promise<{ receptionists: Receptionist[]}> {
+    const skip = (page - 1)* limit;
     const receptionists = await this.receptionistRepo.find({
+      skip,
+      take: limit,
       relations: [ "user", "department"]
     })
     return { receptionists }

@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UsePipes, ValidationPipe, Query } from '@nestjs/common';
 import { ReceptionistsService } from './receptionists.service';
 import { CreateReceptionistDto } from './dto/create-receptionist.dto';
 import { UpdateReceptionistDto } from './dto/update-receptionist.dto';
 import { Roles } from 'src/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles/roles.guard';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('receptionists')
 @ApiTags("Receptionists")
@@ -28,8 +28,13 @@ export class ReceptionistsController {
   @Get()
   @ApiOperation({ summary : "Fetching All Receptionists"})
   @ApiResponse({ status: 200, description: "All Receptionists fetched successfully"})
-  findAll() {
-    return this.receptionistsService.findAll();
+  @ApiQuery({ name: 'page', required: false, type: Number, description: "Page Number (default: 1"})
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: "Items Per Page (default: 10"})
+  findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit : number = 10
+    ) {
+    return this.receptionistsService.findAll(page, limit);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

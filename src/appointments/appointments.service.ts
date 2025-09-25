@@ -50,8 +50,14 @@ export class AppointmentsService {
     return { appointment: savedAppointment};
   }
 
-  async findAll():Promise<{ appointments: Appointment[]}> {
+  async findAll(
+    page: number = 1,
+    limit : number = 10
+  ):Promise<{ appointments: Appointment[]}> {
+    const skip = (page-1)* limit;
     const appointments =  await this.appRepo.find({
+      skip,
+      take: limit,
       relations:["doctor","patient"]
     });
     return { appointments }

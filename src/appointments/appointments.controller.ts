@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards, Query } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { Roles } from 'src/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles/roles.guard';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('appointments')
 @ApiTags('Appointments')
@@ -28,8 +28,13 @@ export class AppointmentsController {
   @Get()
   @ApiOperation({ summary: "Fetching All Appointments"})
   @ApiResponse({ status: 200, description: "All appointments have been successfully added"})
-  findAll() {
-    return this.appointmentsService.findAll();
+  @ApiQuery({ name: 'page', required: false, type: Number, description : 'Page Number (Default : 1)'})
+  @ApiQuery({ name : 'limit' , required: false, type: Number, description: 'Items per page (Default: 10'})
+  findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit : number = 10
+  ) {
+    return this.appointmentsService.findAll(page, limit);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

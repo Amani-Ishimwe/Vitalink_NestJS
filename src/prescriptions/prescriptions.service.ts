@@ -41,8 +41,15 @@ export class PrescriptionsService {
   }
 
 
-  async findAll(): Promise <{ prescriptions: Prescription[]}> {
-    const prescriptions = await this.preRepo.find()
+  async findAll(
+    page: number = 1,
+    limit:  number = 10
+  ): Promise <{ prescriptions: Prescription[]}> {
+    const skip = (page -1)* limit;
+    const prescriptions = await this.preRepo.find({
+      skip,
+      take: limit
+    })
     return { prescriptions}
   }
 

@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UsePipes, ValidationPipe, Query } from '@nestjs/common';
 import { PrescriptionsService } from './prescriptions.service';
 import { CreatePrescriptionDto } from './dto/create-prescription.dto';
 import { UpdatePrescriptionDto } from './dto/update-prescription.dto';
 import { Roles } from 'src/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles/roles.guard';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('prescriptions')
 @ApiTags("Prescriptions")
@@ -28,8 +28,13 @@ export class PrescriptionsController {
   @Get()
   @ApiOperation({ summary: " Fetching Prescriptions "})
   @ApiResponse({ status:200, description: "Prescriptions fetched successfully"})
-  findAll() {
-    return this.prescriptionsService.findAll();
+  @ApiQuery({ name: 'page', required: false, type: Number, description: "Page Number (default: 1"})
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: "Items Per Page (default: 10"})
+  findAll(
+    @Query('page') page: number = 1,
+    @Query('limit')  limit : number = 10
+  ) {
+    return this.prescriptionsService.findAll(page, limit);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

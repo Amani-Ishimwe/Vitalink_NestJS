@@ -25,8 +25,16 @@ export class DepartmentsService {
     return { department: savedDepartement}
   }
 
-  async findAll(): Promise<{ departments: Department[]}> {
-    return this.depRepo.find().then(departments => ({departments}));
+  async findAll(
+    page : number = 1,
+    limit: number = 10
+  ): Promise<{ departments: Department[]}> {
+    const skip = (page - 1)*limit;
+    const departments = await this.depRepo.find({
+      skip,
+      take: limit
+    })
+    return {departments}
   }
 
   async findOne(id: string) {

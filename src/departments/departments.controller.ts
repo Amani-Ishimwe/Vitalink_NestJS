@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UsePipes, ValidationPipe, Query } from '@nestjs/common';
 import { DepartmentsService } from './departments.service';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
 import { Roles } from 'src/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles/roles.guard';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('departments')
 @ApiTags("Departments")
@@ -28,8 +28,13 @@ export class DepartmentsController {
   @Get()
   @ApiOperation({ summary: "Fetching departments"})
   @ApiResponse({ status: 200, description: "Departments fetched successfully"})
-  findAll() {
-    return this.departmentsService.findAll();
+  @ApiQuery({ name: 'page', required: false, type: Number, description: "page number( default:1)"})
+  @ApiQuery({ name: 'limit', required: false, type: Number, description:"Items Per Page( Default :10"})
+  findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10
+  ) {
+    return this.departmentsService.findAll(page, limit);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

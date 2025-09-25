@@ -23,8 +23,15 @@ export class WardsService {
     private readonly patientRepo: Repository<Patient>
   ) {}
 
-  async findAll(): Promise<{ wards: Ward[]}> {
-    const wards = await this.wardRepo.find();
+  async findAll(
+    page: number = 1,
+    limit : number = 10
+  ): Promise<{ wards: Ward[]}> {
+    const skip = (page - 1) * limit;
+    const wards = await this.wardRepo.find({
+      skip,
+      take: limit
+    });
     return  { wards }
   }
 

@@ -12,8 +12,17 @@ export class SchedulesService {
     private scheduleRepo: Repository<ShiftSchedule>
   ) {}
 
-  findAll() {
-    return this.scheduleRepo.find({ relations: ["doctor"] });
+  async findAll(
+    page: number = 1,
+    limit:  number = 10
+  ): Promise <{ schedules : ShiftSchedule[]}> {
+    const skip =(page -1)*limit;
+    const schedules = await  this.scheduleRepo.find({ 
+      skip,
+      take:limit,
+      relations: ["doctor"] 
+    });
+    return {schedules}
   }
 
   async findOne(id: string) {

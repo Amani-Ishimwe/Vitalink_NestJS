@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UsePipes, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UsePipes, UseGuards, Query } from '@nestjs/common';
 import { SchedulesService } from './schedules.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
@@ -6,7 +6,7 @@ import { Roles } from 'src/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth/jwt-auth.guard';
 import { Role } from 'src/entities/user.entity';
 import { RolesGuard } from 'src/auth/roles/roles.guard';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('schedules')
 @ApiTags("Schedules")
@@ -19,8 +19,13 @@ export class SchedulesController {
   @Get()
   @ApiOperation({ summary: "Fetches all schedules"})
   @ApiResponse({ status: 200, description: "All Schedules fetched successfully"})
-  findAll() {
-    return this.schedulesService.findAll();
+  @ApiQuery({ name: 'page', required: false, type: Number, description: "Page Number (default: 1"})
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: "Items Per Page (default: 10"})
+  findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit : number = 10
+  ) {
+    return this.schedulesService.findAll(page, limit);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

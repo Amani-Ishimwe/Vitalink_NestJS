@@ -42,8 +42,8 @@ export class UsersController {
   @Get(':id')
   @ApiOperation({ summary: " Fetching Single User "})
   @ApiResponse({ status: 200, description: "User fetched successfully"})
-  findOne(@Param('id') id: string, @Req() req) {
-    return this.usersService.findOne(id, req.user);
+  findOne(@Param('id') id: string) {
+    return this.usersService.findOne(id);
   }
 
   @Patch(':id')

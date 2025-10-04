@@ -43,7 +43,7 @@ export class UsersService {
   }
 
   async findOne(
-    userId: string, requestingUser:{ id: string, role: string}
+    userId: string
   ):Promise<{ user: User}>{
     const user = await this.userRepository.findOneBy({ id: userId})
     if(!user){
@@ -51,6 +51,7 @@ export class UsersService {
     }
     return { user }
   }
+
 
   async update(
     id: string, updateUserDto: UpdateUserDto
